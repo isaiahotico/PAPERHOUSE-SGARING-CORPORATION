@@ -2,15 +2,15 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
 import { getDatabase, ref, set, get, onValue, push, query, orderByChild, limitToLast, update } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
-// --- CONFIGURATION ---
+// --- DATABASE CONFIGURATION ---
 const firebaseConfig = {
     apiKey: "AIzaSyBwpa8mA83JAv2A2Dj0rh5VHwodyv5N3dg",
-    authDomain: "freegcash-ads.firebaseapp.com",
-    databaseURL: "https://freegcash-ads-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "freegcash-ads",
-    storageBucket: "freegcash-ads.firebasestorage.app",
-    messagingSenderId: "608086825364",
-    appId: "1:608086825364:web:3a8e628d231b52c6171781"
+    authDomain: "facebook-follow-to-follow.firebaseapp.com",
+    databaseURL: "https://facebook-follow-to-follow-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "facebook-follow-to-follow",
+    storageBucket: "facebook-follow-to-follow.firebasestorage.app",
+    messagingSenderId: "589427984313",
+    appId: "1:589427984313:web:a17b8cc851efde6dd79868"
 };
 
 const HIGH_REWARD = 0.0102;
@@ -21,8 +21,9 @@ const INITIAL_AD_COOLDOWN_MS = 2 * 60 * 1000; // 2 minutes
 
 const AD_ZONES = [
     'show_10555663',
-    'show_10555746',
-    'show_10555727'
+    'show_10830602',
+    'show_10555727',
+    'show_10832019'
      ];
 
 const PSYCHOLOGICAL_TIPS = [
