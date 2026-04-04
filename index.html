@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PAPERHOUSE SHARING CORPORATION</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    
+    <!-- Monetag SDKs -->
+    <script src='//libtl.com/sdk.js' data-zone='10555663' data-sdk='show_10555663'></script>
+    <script src='//libtl.com/sdk.js' data-zone='10830602' data-sdk='show_10830602'></script>
+    <script src='//libtl.com/sdk.js' data-zone='10555746' data-sdk='show_10555746'></script>
+
+    <style>
+        :root { --main-bg: #111827; --main-text: #ffffff; --accent: #3b82f6; }
+        body { background-color: var(--main-bg); color: var(--main-text); transition: all 0.3s ease; }
+        .menu-active { transform: translateX(0) !important; }
+        .hidden-section { display: none; }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+
+    <!-- Sidebar Menu -->
+    <div id="sidebar" class="fixed top-0 left-0 h-full w-64 bg-gray-900 shadow-2xl z-50 transform -translate-x-full transition-transform duration-300 border-r border-gray-700">
+        <div class="p-6">
+            <h2 class="text-xl font-bold text-blue-400 mb-6">PAPERHOUSE</h2>
+            <nav class="space-y-4">
+                <button onclick="showSection('home')" class="block w-full text-left p-2 hover:bg-gray-800 rounded">🏠 Dashboard</button>
+                <button onclick="showSection('ads')" class="block w-full text-left p-2 hover:bg-gray-800 rounded">📺 Earn via Ads</button>
+                <button onclick="showSection('tasks')" class="block w-full text-left p-2 hover:bg-gray-800 rounded">👪 Family Tasks</button>
+                <button onclick="showSection('withdraw')" class="block w-full text-left p-2 hover:bg-gray-800 rounded">💰 Withdrawal</button>
+                <button onclick="showSection('settings')" class="block w-full text-left p-2 hover:bg-gray-800 rounded">🎨 Appearance</button>
+                <button onclick="showSection('admin')" class="block w-full text-left p-2 hover:bg-gray-800 rounded text-red-400">🛡️ Admin Panel</button>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Header -->    <header class="bg-gray-800 p-4 sticky top-0 z-40 flex justify-between items-center border-b border-gray-700">
+        <button onclick="toggleMenu()" class="text-2xl">☰</button>
+        <div class="text-center">
+            <h1 class="text-sm font-bold text-blue-400">PAPERHOUSE SHARING CORP</h1>
+            <p id="topUsername" class="text-xs text-green-400 font-mono">@loading...</p>
+        </div>
+        <div class="text-right text-[10px]">
+            <p>Online: <span id="statOnline">0</span></p>
+            <p>Total Users: <span id="statTotalUsers">0</span></p>
+        </div>
+    </header>
+
+    <main class="p-4 mb-20">
+        <!-- Dashboard -->
+        <section id="sec-home">
+            <div class="bg-gray-800 p-6 rounded-xl shadow-lg text-center mb-4">
+                <h3 class="text-gray-400 uppercase text-xs tracking-widest">Available Balance</h3>
+                <h2 id="mainBalance" class="text-4xl font-bold text-green-500 my-2">0.00000</h2>
+                <p class="text-xs text-gray-500">Total System Income: <span id="statTotalIncome">0</span> USDT</p>
+            </div>
+            <div id="quoteBox" class="bg-blue-900/30 border border-blue-500/50 p-4 rounded-lg italic text-sm text-blue-200">
+                "Loading your daily motivation..."
+            </div>
+        </section>
+
+        <!-- Ads Section -->
+        <section id="sec-ads" class="hidden-section space-y-4">
+            <h2 class="text-xl font-bold mb-4">Ad Rewards</h2>
+            <div class="grid grid-cols-1 gap-4">
+                <button id="btnAd1" onclick="startAdProcess('PREMIUM ADS 1')" class="bg-gradient-to-r from-purple-600 to-blue-600 p-6 rounded-xl font-bold text-lg shadow-lg active:scale-95 transition">
+                    PREMIUM ADS 1
+                    <div class="text-xs font-normal opacity-80">Reward: 0.00014 USDT</div>
+                </button>
+                <button id="btnAd2" onclick="startAdProcess('TURBO ADS 2')" class="bg-gradient-to-r from-orange-600 to-red-600 p-6 rounded-xl font-bold text-lg shadow-lg active:scale-95 transition">
+                    TURBO ADS 2
+                    <div class="text-xs font-normal opacity-80">Reward: 0.00014 USDT</div>
+                </button>            </div>
+            <p id="cooldownMsg" class="text-center text-red-400 text-sm hidden">Cooldown active: Please wait 5 minutes.</p>
+        </section>
+
+        <!-- Withdrawal Section -->
+        <section id="sec-withdraw" class="hidden-section">
+            <h2 class="text-xl font-bold mb-4">Withdraw Funds</h2>
+            <div class="bg-gray-800 p-4 rounded-xl space-y-3">
+                <input id="wdAmount" type="number" placeholder="Min 0.02 USDT" class="w-full p-2 rounded bg-gray-700 border border-gray-600">
+                <select id="wdMethod" class="w-full p-2 rounded bg-gray-700 border border-gray-600">
+                    <option value="GCash">GCash</option>
+                    <option value="FaucetPay">FaucetPay</option>
+                    <option value="PayPal">PayPal</option>
+                </select>
+                <input id="wdAccount" type="text" placeholder="Number or Email" class="w-full p-2 rounded bg-gray-700 border border-gray-600">
+                <input id="wdName" type="text" placeholder="Account Name" class="w-full p-2 rounded bg-gray-700 border border-gray-600">
+                <button onclick="submitWithdrawal()" class="w-full bg-green-600 p-3 rounded font-bold">Request Withdrawal</button>
+            </div>
+            <div class="mt-6">
+                <h3 class="text-sm font-bold mb-2">Withdrawal History</h3>
+                <div id="wdHistory" class="text-xs space-y-2"></div></div>
+        </section>
+
+        <!-- Family Tasks Section -->
+        <section id="sec-tasks" class="hidden-section">
+            <h2 class="text-xl font-bold mb-2">Family Tasks</h2>
+            <p class="text-[10px] text-gray-400 mb-4">Post your TG link for 1 Peso (approx 0.018 USDT). One post every 12h.</p>
+            <div class="bg-gray-800 p-4 rounded-xl mb-6">
+                <input id="taskLink" type="text" placeholder="Telegram Link" class="w-full p-2 rounded bg-gray-700 border mb-2">
+                <button onclick="postTask()" class="w-full bg-blue-600 p-2 rounded text-sm">Post Link (Cost 1 Peso)</button>
+            </div>
+            <div id="taskList" class="space-y-3"></div>
+        </section>
+
+        <!-- Appearance -->
+        <section id="sec-settings" class="hidden-section">
+            <h2 class="text-xl font-bold mb-4">Settings</h2>
+            <div class="bg-gray-800 p-4 rounded-xl space-y-4">
+                <div>
+                    <label class="block text-xs mb-1">Background Color</label>
+                    <input type="color" id="colorBg" onchange="updateColors()" class="w-full h-10 rounded">
+                </div>
+                <div>
+                    <label class="block text-xs mb-1">Text Color</label>
+                    <input type="color" id="colorText" onchange="updateColors()" class="w-full h-10 rounded">
+                </div>
+            </div>
+        </section>
+
+        <!-- Admin Panel -->
+        <section id="sec-admin" class="hidden-section">
+            <div id="adminAuth">
+                <input id="adminPass" type="password" placeholder="Admin Password" class="w-full p-2 rounded bg-gray-700 border mb-2">
+                <button onclick="checkAdmin()" class="w-full bg-red-600 p-2 rounded">Unlock Admin</button>
+            </div>
+            <div id="adminContent" class="hidden">
+                <h2 class="text-xl font-bold text-red-500 mb-4">Admin Dashboard</h2>
+                <div id="adminPending" class="space-y-4"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Ad Overlay -->
+    <div id="adOverlay" class="fixed inset-0 bg-black/95 z-[100] hidden flex flex-col items-center justify-center p-6 text-center">
+        <h2 class="text-2xl font-bold mb-2">Watching Ad...</h2>
+        <p class="text-gray-400 text-sm mb-6">Do not close this page. Auto-pauses if you leave.</p>
+        <div class="w-48 h-48 border-8 border-gray-700 border-t-blue-500 rounded-full flex items-center justify-center text-4xl font-bold" id="adTimer">20</div>
+        <button id="claimBtn" onclick="claimReward()" class="mt-8 bg-green-600 px-8 py-3 rounded-full font-bold hidden">CLAIM REWARD</button>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
