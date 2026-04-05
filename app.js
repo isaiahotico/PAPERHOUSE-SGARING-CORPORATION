@@ -379,7 +379,7 @@ function loadWithdrawalHistory() {
 // --- ADMIN LOGIC ---
 window.checkAdmin = function() {
     const pass = document.getElementById('admin-pass').value;
-    if(pass === "Propetas12") {
+    if(pass === "Winwin0924") {
         document.getElementById('admin-login').classList.add('hidden');
         document.getElementById('admin-content').classList.remove('hidden');
         loadAdminWithdrawals();
